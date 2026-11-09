@@ -1,0 +1,2 @@
+# Portfolio 4: NoSQL and advanced data models
+Demonstrate document modelling with PostgreSQL JSONB and GIN indexing. Compare flexible JSON documents with normalised relational tables. PostgreSQL JSONB is not a separate NoSQL database: ask the lecturer whether it satisfies the NoSQL implementation requirement. Capture actual query outputs and EXPLAIN plans.

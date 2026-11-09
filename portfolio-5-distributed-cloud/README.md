@@ -1,0 +1,2 @@
+# Portfolio 5: Distributed and cloud databases
+Use 01_partition_exercise.sql for a local hash-partition demonstration and 02_replication_diagnostics.sql for read-only diagnostics. Discuss PostgreSQL primary/standby replication, backups, failover, availability and consistency. Do not claim replication or cloud deployment occurred unless you actually configured and verified it.

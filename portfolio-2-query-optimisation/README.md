@@ -1,0 +1,2 @@
+# Portfolio 2: Query processing and optimisation
+Run 01_queries.sql and 02_plan_before.sql. Save the real EXPLAIN ANALYZE output. Then run 03_index.sql and 04_plan_after.sql. Compare planning/execution time, scanned rows and buffers. Small sample datasets may use sequential scans even after indexing; this is not a failure. Never invent timing results.

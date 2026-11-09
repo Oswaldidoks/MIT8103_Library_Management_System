@@ -1,0 +1,2 @@
+# Portfolio 3: Transactions and concurrency
+Run the examples on a fresh seeded demo database. Capture COMMIT, ROLLBACK, and two-session locking evidence. For the concurrency experiment, execute session A interactively, pause before COMMIT, then start session B in another terminal. Explain row-level locks, isolation and the unique partial index. Some scripts intentionally change data; reset the database between exercises.

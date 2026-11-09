@@ -1,0 +1,2 @@
+# Portfolio 1: Database design and modelling
+Run 01_schema.sql, then 02_seed.sql, then 03_integrity_checks.sql in a new PostgreSQL database. Include an ER diagram and explain normalisation to 3NF. Books represent titles; book_copies represent individual physical items. Loans reference copies, borrowers and staff. Fines reference loans. Save actual psql output and screenshots in evidence/portfolio-1/.

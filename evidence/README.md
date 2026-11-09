@@ -1,0 +1,2 @@
+# Real execution evidence
+Add screenshots and text outputs from your own PostgreSQL runs for portfolios 1–5. Include before/after query plans, concurrency sessions, JSONB results, partition output and replication diagnostics. Do not fabricate results. This folder is intentionally empty until you run the exercises.
