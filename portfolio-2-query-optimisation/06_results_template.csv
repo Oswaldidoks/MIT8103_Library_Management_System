@@ -1,0 +1,10 @@
+metric,before,after,notes
+PostgreSQL_version,,,
+total_loans,,,
+plan_node,,,
+planning_time_ms,,,
+execution_time_ms,,,
+shared_hit_buffers,,,
+shared_read_buffers,,,
+rows_returned,,,
+analysis,,"Fill from real EXPLAIN output; describe planner choices"
