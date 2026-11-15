@@ -1,20 +1,8 @@
-# MIT 8103 — PostgreSQL Library Management System
+# MIT 8103 Advanced Database Systems — Crescent City Library
 
-**Case study:** Crescent City Library, a simulated two-branch library. **Engine:** PostgreSQL 14+; sample records are synthetic.
+**Case study:** Crescent City Library, a fictional two-branch lending system. PostgreSQL 16 provides the relational source of truth for books, physical copies, borrowers, staff, loans, returns, overdue fines and payments. MongoDB illustrates a separate document-oriented catalogue; PostgreSQL JSONB supports a comparison. Synthetic records only.
 
-## Portfolio map
-
-| Component | Material | What still requires real evidence |
-|---|---|---|
-| [1. Database design](portfolio-1-database-design/) | SQL schema/seed, [GitHub ERD](portfolio-1-database-design/04_erd.md), [normalisation](portfolio-1-database-design/05_normalisation.md) | Real schema/query screenshots |
-| [2. Optimisation](portfolio-2-query-optimisation/) | Reports, optional 100,000-row benchmark, index and EXPLAIN comparisons | Actual before/after timings, buffers and interpretation |
-| [3. Transactions](portfolio-3-transactions-concurrency/) | Checkout/return functions, locks and isolated READ COMMITTED / REPEATABLE READ scripts | Two-session screenshots and outputs |
-| [4. Advanced document model](portfolio-4-nosql-postgresql/) | JSONB, containment queries and GIN index | Results, suitability explanation; lecturer approval if standalone NoSQL is expected |
-| [5. Distributed/cloud](portfolio-5-distributed-cloud/) | Local partitions, read-only replication diagnostics, proposed primary/standby architecture | Observed outputs; do not claim replication deployment |
-| [LMS submission](submission/) | Summary and AI-use templates | Your 2–3 page final document and individual reflection |
-
-### First-time setup
-Use a new *demonstration* database; do not run these scripts on production:
+## Quick start (fresh training database only)
 
 ```bash
 createdb library_portfolio
@@ -22,12 +10,33 @@ psql -X -v ON_ERROR_STOP=1 -d library_portfolio -f portfolio-1-database-design/0
 psql -X -v ON_ERROR_STOP=1 -d library_portfolio -f portfolio-1-database-design/02_seed.sql
 psql -X -v ON_ERROR_STOP=1 -d library_portfolio -f portfolio-1-database-design/03_integrity_checks.sql
 psql -X -v ON_ERROR_STOP=1 -d library_portfolio -f tests/01_smoke_checks.sql
+# Optional additional foreign-key indexes
+psql -X -v ON_ERROR_STOP=1 -d library_portfolio -f portfolio-1-database-design/07_fk_indexes.sql
 ```
 
-For optimisation, run `portfolio-2-query-optimisation/02_benchmark_seed.sql`, then `03_plan_before.sql`, `04_index.sql`, `05_plan_after.sql` **in that order**. Old numbering variants in this folder are superseded. Test concurrency and transaction isolation with two terminals as explained in Portfolio 3's README. Run Portfolio 4 and 5 exercises according to their READMEs.
+The 08 constraint tests intentionally encounter errors; execute them separately and capture the results. Portfolio 2 benchmarking inserts large *synthetic* datasets; use an isolated, disposable database and review cleanup instructions.
 
-**Evidence and integrity:** The repository holds scripts and learning materials, not proof of execution. Another AI reported testing earlier scripts on PostgreSQL 16; newly added exercises need to be run independently. Include only genuine plans, results and screenshots. Your own final reflection and accurate AI-use declaration are mandatory. No credentials or real borrower data belong in GitHub.
+## Portfolio map
 
-**Scope limitations:** PostgreSQL JSONB offers document-style modelling but is not a separate NoSQL database. Local partitioning is not sharding. Empty replication status means no replica connection was observed. The institution asks for a private GitHub repository; the owner has elected to keep this one public, so confirm that exception with the assessor.
+| Component | Folder | Execution order and deliverables |
+|---|---|---|
+| 1. Design | [portfolio-1-database-design](portfolio-1-database-design/) | Existing 01–03; [04 ERD](portfolio-1-database-design/04_erd.md); [05 normalisation](portfolio-1-database-design/05_normalisation.md); 06 decisions, 07 indexes, 08 constraint tests |
+| 2. Optimisation | [portfolio-2-query-optimisation](portfolio-2-query-optimisation/) | 01 reports → 02 benchmark seed → 03 baseline → 04 index → 05 indexed plan; 08 extra queries; optional 09–12 trigram experiment → 13 cleanup; 06–07 results templates |
+| 3. Transactions | [portfolio-3-transactions-concurrency](portfolio-3-transactions-concurrency/) | Existing 01–04 and 06–10; 05 direct-insert race; isolated 11–15 deadlock/serializable demos; 00 reset guidance |
+| 4. NoSQL | [portfolio-4-nosql-mongodb](portfolio-4-nosql-mongodb/) | Docker MongoDB, seed, query, index, EXPLAIN; [suitability](portfolio-4-nosql-mongodb/05_suitability.md) |
+| 4. JSONB comparison | [portfolio-4-nosql-postgresql](portfolio-4-nosql-postgresql/) | Existing 01/02 plus optional 03 larger dataset and 04 cleanup |
+| 5. Distributed/cloud | [portfolio-5-distributed-cloud](portfolio-5-distributed-cloud/) | Existing 01–03; 04 consistency analysis and optional [primary/standby Docker lab](portfolio-5-distributed-cloud/docker/) |
+| Evidence | [evidence](evidence/) | Run/capture helpers and evidence capture checklist by portfolio |
+| Submission | [submission](submission/) | 2–3-page LMS summary, AI declaration, reflection questions, final checklist |
 
-**Official references:** [PostgreSQL EXPLAIN](https://www.postgresql.org/docs/16/sql-explain.html), [Isolation](https://www.postgresql.org/docs/16/transaction-iso.html), [JSON](https://www.postgresql.org/docs/16/datatype-json.html), [Replication](https://www.postgresql.org/docs/16/warm-standby.html).
+## Evidence
+
+Previously captured PostgreSQL 16.15 outputs, source attribution and execution caveats are recorded in [evidence/README.md](evidence/README.md). New **student-run** capture instructions are in [evidence/CAPTURE_GUIDE.md](evidence/CAPTURE_GUIDE.md), and imported-vs-unexecuted status is in [submission/05_evidence_matrix.md](submission/05_evidence_matrix.md). Scripts are **not evidence of successful execution**. Output files produced by the capture helpers must be inspected/redacted before committing. The original supplied PostgreSQL 16.15 evidence is attributed to an automated Claude run. **The new patch-set scripts and Docker experiments are not executed by me.**
+
+## Limitations
+
+The fine policy is a simple NGN 50/day rule without grace periods or caps; reservations, loan limits and enterprise-grade access control are out of scope. Benchmark loans/books are synthetic and must be removed or clearly separated from normal sample data. MongoDB's embedded-copy availability is a *demonstration* and is not transactionally synchronised with PostgreSQL. The Docker streaming-replication example is a local learning lab, not a production high-availability or automatic-failover deployment. Hash partitioning on one PostgreSQL server is **not sharding**. Asynchronous replicas can return stale reads and may lose transactions during forced failover.
+
+## Contributing / progressive commits
+
+Make small, verifiable commits grouped by portfolio. Keep a meaningful commit series for each component (design → experiment → documentation → evidence). A series recorded over time should reflect real work; **do not alter timestamps or simulate activity**. Never commit passwords, credentials, real borrower records or made-up outputs. The assessment brief requires a private repository with assessor access; use GitHub collaborators to share it.

@@ -1,0 +1,25 @@
+# Never commit secrets or populated environment files
+.env
+.env.*
+!.env.example
+!**/.env.example
+*.secret
+*.pem
+*.key
+# Docker data
+**/pgdata/
+**/mongo-data/
+**/docker-volumes/
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*~
+# Local logs / generated output
+*.log
+*.tmp
+__pycache__/
+*.pyc
+# Evidence files should be added deliberately after redaction; do not ignore them.
