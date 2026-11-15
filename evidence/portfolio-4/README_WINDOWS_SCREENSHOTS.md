@@ -33,4 +33,4 @@ The dataset contains only eight documents. Index usage and fewer examined docume
 
 Do not recreate terminal screenshots or add fabricated results. Before publishing images, review every screenshot for passwords/tokens/private information. These particular screenshots display Windows paths and commands with environment-variable names; the actual secrets should not be included.
 
-**Upload status:** This text note alone does **not** upload the binary screenshots. The original PNGs can be found in the supplied `Portfolio4_Windows_Genuine_Screenshots.zip` archive and must be present beside this note for image evidence to be considered committed to GitHub.
+**Upload status, checked 15 November 2026:** The first three original PNGs (Docker startup, eight-document seed, and before-index explain) were committed to this folder. Their Git blob hashes match the original images. The other two original PNGs (after-index plan and execution summary) are in the supplied `Portfolio4_Windows_Genuine_Screenshots.zip` archive and are **not yet confirmed committed**; verify the folder contents before submission. No synthetic image or watermark has been added.
