@@ -1,27 +1,29 @@
-# Portfolio 1 — Case study and normalisation
+# Crescent City Library — normalisation to 3NF
 
-## Organisation and operations
-Crescent City Library is a simulated two-branch lending service. Librarians check out/return copies, staff register borrowers and fines, borrowers search catalogues, and managers review overdue loans. It stores branches, staff, books, authors, categories, physical copies, borrowers, loans, fines and individual payments.
+## Worked example: from a flat sheet to relational tables
 
-## Relational modelling and dependencies
-- `books(book_id, isbn, title, category_id, ...)`: `book_id → isbn,title,category_id,...`. Book titles are **not** duplicated in `book_copies` or `loans`.
-- `book_copies(copy_id, book_id, branch_id, barcode, ...)`: `copy_id → book_id,branch_id,barcode,...`. Physical copy and book title are different entities.
-- `borrowers(borrower_id, library_card, full_name, email, ...)`: borrower identity is stored once, not repeated on every loan.
-- `loans(loan_id, copy_id, borrower_id, checked_out_by, ...)`: loan references the copy, borrower, staff and transaction times.
-- `book_authors(book_id, author_id)`: composite primary key represents many-to-many authorship without repeating groups.
-- `fines(fine_id, loan_id, assessed_amount, ...)` and `fine_payments(payment_id, fine_id, amount, ...)`: support partial payments and an auditable history.
+Imagine a single **unnormalised library transaction spreadsheet** with columns: loan number, borrower library card, borrower name, borrower email, book ISBN/title, **a comma-separated list of author names**, copy barcode, branch code/name/address, checkout staff, due/return dates, fine amount and several payment receipts. This is an **illustrative source sheet**, not actual stored data.
 
-## First normal form (1NF)
-One physical copy per `book_copies` row, one borrower per `borrowers` row, one transaction per `loans` row. Authors are in `authors` and `book_authors`, not a comma-separated field in `books`. The optional `books.metadata` JSONB is intentionally semi-structured for Portfolio 4, not the authoritative source of core relational identities.
+**Repeated data and anomalies:** every new checkout repeats a borrower's email, book title and branch address. An **update anomaly** occurs if branch address changes on only some rows; an **insert anomaly** prevents recording a new book before someone borrows it; a **delete anomaly** risks losing the only stored details of a rare title when its last loan is deleted. Repeating author fields and payment columns also prevent reliable querying.
 
-## Second normal form (2NF)
-The only composite primary key is `book_authors(book_id,author_id)`, with no descriptive attributes depending solely on one part. All other base tables have single-column primary keys. This avoids partial-key dependencies.
+### 1NF — atomic values and separate repeat groups
 
-## Third normal form (3NF)
-Borrower name/email depend on `borrower_id`, not `loan_id`; book title/ISBN depend on `book_id`, not `copy_id`; author names depend on `author_id`, not a particular book-author link. Separating loans, fines and payments avoids transitive descriptive data and preserves separate business events.
+Give each row a stable loan identifier, keep atomic borrower/book/copy fields and dates, and split the author list and repeated payments into separately represented rows. A partial intermediate 1NF design could be `LoanFlat(loan_id, borrower_card, borrower_name, isbn, title, barcode, branch_code, due_at, ...)` plus `LoanFlatAuthor(loan_id, author_name)` and `LoanFlatPayment(loan_id, receipt_ref, amount)`. **This is not the final schema**, and it still repeats descriptive data across loans.
 
-## Constraints and transaction rules
-Primary/foreign keys preserve references; unique keys protect barcodes, ISBNs and library cards. `loans_due_after_start` protects due dates. `ux_loans_one_open_per_copy` prohibits two unreturned loans on the same physical copy. `checkout_book` uses `SELECT ... FOR UPDATE` to serialize concurrent attempts; `pay_fine` locks the fine row before calculating its payment balance.
+### 2NF — remove dependencies on part of a composite key
 
-## Limitations to discuss in your own reflection
-The demo fine policy is NGN 50 per calendar day with no grace period, holiday exemptions or maximum. Checkout has no reservations or borrowing limits. A direct database user with table-write permissions could bypass some function checks; production roles should restrict table DML. These are conscious scope constraints, not implemented features.
+Separate title and authors into `books`, `authors` and junction `book_authors(book_id, author_id)`, rather than storing book/title attributes in author-association rows. In the final schema `book_authors` has the composite key `(book_id, author_id)` and **no non-key attributes** dependent on one component alone. Other final tables use a single primary key. Keep a separate `book_copies(copy_id, book_id, branch_id, barcode, ...)`: one book title can have several physical copies.
+
+### 3NF — remove transitive descriptive dependencies
+
+Move borrower properties to `borrowers(borrower_id, library_card, full_name, email, ...)`, staff properties to `staff`, category names to `categories`, branch names/addresses to `branches` and book bibliographic properties to `books`. `loans(loan_id, copy_id, borrower_id, checked_out_by, due_at, ...)` then stores IDs and the checkout/return event rather than borrower names or branch addresses. `fines` records assessments linked to loans; `fine_payments` stores each payment, avoiding payment-receipt repeat groups. 
+
+Examples of intended functional dependencies: `book_id → isbn,title,category_id,...`; `copy_id → book_id,branch_id,barcode,...`; `borrower_id → library_card,full_name,email,...`; `loan_id → copy_id,borrower_id,due_at,...`. In the baseline domain a loan refers to **one physical copy**, not a row that stores many titles.
+
+## Tables in the final design
+
+`branches`, `staff`, `borrowers`, `categories`, `authors`, `books`, `book_authors`, `book_copies`, `loans`, `fines` and `fine_payments` are implemented in `01_schema.sql`. Surrogate primary keys, unique natural identifiers, foreign keys and CHECK constraints maintain integrity. The partial unique index on an **open** loan prevents two active loans against a physical copy. The checkout function also locks the copy and checks status (defence in depth).
+
+## Deliberate qualification
+
+`books.metadata` is JSONB for optional catalogue descriptors; it is semi-structured **by design** and is compared with MongoDB in Portfolio 4. It is not used to replace authoritative book, author, borrower or transaction relations. The demonstration fee is NGN 50 per overdue day with no grace/cap policy; loan limits, reservations and staff authorisation by database roles remain outside the implemented scope.
