@@ -1,21 +1,52 @@
-# Portfolio 2 — Before/after query plan analysis
+# Portfolio 2 — performance analysis worksheet
 
-Run the same library query twice, once without and once with `idx_loans_borrower_date`. First execute `02_benchmark_seed.sql` in a fresh demo database (100,000 synthetic historical loans). Run scripts `03_plan_before.sql`, `04_index.sql`, and `05_plan_after.sql` in this order; save actual terminal output in `evidence/portfolio-2/`.
+**Status: FILL FROM MY OWN EVIDENCE.** This is a comparison structure, not measured results. Save the original terminal output under `evidence/portfolio-2/` and cite filenames below.
 
-## Experiment
-**Question:** Does `(borrower_id, loaned_at DESC)` speed up recent-loan lookup for one borrower with `LIMIT 25`?
+## Environment and data
 
-**Before:** [Paste actual scan/sort node, execution time, buffers, rows.]
-**After:** [Paste actual scan node, execution time, buffers, rows.]
-**Comparison:** [Explain improvement or regression. Do **not** claim an index is always faster. A small table, cache, data distribution or selectivity can favour a sequential scan.]
+| Field | FILL FROM MY OWN EVIDENCE |
+|---|---|
+| PostgreSQL version / OS | **FILL FROM MY OWN EVIDENCE** |
+| CPU/RAM/storage (if known) | **FILL FROM MY OWN EVIDENCE** |
+| Database and sample row counts | **FILL FROM MY OWN EVIDENCE** |
+| Seed command and date | **FILL FROM MY OWN EVIDENCE** |
+| Exact SQL query | **FILL FROM MY OWN EVIDENCE** (copy from `03_plan_before.sql` / `05_plan_after.sql`) |
+| Before plan output file | **FILL FROM MY OWN EVIDENCE** |
+| After plan output file | **FILL FROM MY OWN EVIDENCE** |
 
-## Index reasoning
-The first indexed column matches `borrower_id = 4`; the second helps the range predicate and descending ordering. The partial unique index on `copy_id WHERE returned_at IS NULL` prevents duplicate active loans but is not a suitable index for this borrower/date query.
+## Repeat-run protocol
 
-## Fair measurements
-Use equal SQL predicates and the same dataset. Save `SELECT version();`, row count, full `EXPLAIN (ANALYZE, BUFFERS)` plans, and any timing variation from repeated runs. EXPLAIN ANALYZE **actually executes** the query. Planning time and execution time are separate. Do not use `enable_seqscan=off` as evidence that an index is naturally beneficial.
+1. Execute `02_benchmark_seed.sql` in a disposable seeded database; run `ANALYZE library.loans`.
+2. Run `03_plan_before.sql` **three times** and keep all three complete `EXPLAIN (ANALYZE, BUFFERS)` plans.
+3. Run `04_index.sql`, then `05_plan_after.sql` **three times**. Do not change SQL predicates between trials.
+4. Record execution time, planning time, node type, rows, shared hit/read buffers for every run; report the **median** of each set of three execution times. Warm cache effects and other running processes may affect the comparison.
+5. Record index size after creation:
 
-## Optional catalogue search
-For `ILIKE '%data%'` on a realistically large titles table, consider `pg_trgm` and a GIN index, but first verify `pg_trgm` is available and compare plans. With just eight sample books, a sequential scan is often reasonable.
+```sql
+SELECT pg_size_pretty(pg_relation_size('library.idx_loans_borrower_date'::regclass)) AS index_size;
+```
 
-Official references: https://www.postgresql.org/docs/16/sql-explain.html and https://www.postgresql.org/docs/16/indexes-multicolumn.html
+## Before and after: enter only measured values
+
+| Measurement | Before — FILL FROM MY OWN EVIDENCE | After — FILL FROM MY OWN EVIDENCE |
+|---|---|---|
+| Plan node(s) | | |
+| Planning time (ms), run 1/2/3 | | |
+| Execution time (ms), run 1/2/3 | | |
+| Median execution time (ms) | | |
+| Rows output | | |
+| Shared hit buffers | | |
+| Shared read buffers | | |
+| Disk size of index | n/a | |
+
+## Interpretation — answer in your own words
+
+- Why did the planner choose an index or a sequential scan? Was there a Sort or Bitmap Heap Scan? **FILL FROM MY OWN EVIDENCE.**
+- Why is `borrower_id` the leading key column, with `loaned_at DESC` second? **FILL FROM MY OWN EVIDENCE.**
+- Is the actual speedup meaningful across the **median of three** runs? What could caching explain? **FILL FROM MY OWN EVIDENCE.**
+- What extra disk space, INSERT/UPDATE/DELETE maintenance and vacuum costs does the index create? **FILL FROM MY OWN EVIDENCE.**
+- Did the separate `pg_trgm` title benchmark choose a GIN-assisted plan for `ILIKE '%data%'`? **FILL FROM MY OWN EVIDENCE.**
+
+### Sources
+
+[PostgreSQL 16 EXPLAIN](https://www.postgresql.org/docs/16/sql-explain.html); [multicolumn indexes](https://www.postgresql.org/docs/16/indexes-multicolumn.html); [pg_trgm](https://www.postgresql.org/docs/16/pgtrgm.html).
