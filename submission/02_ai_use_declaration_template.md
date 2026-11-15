@@ -1,15 +1,28 @@
-# AI use declaration — complete truthfully
+# AI-use declaration — complete and edit truthfully
 
-The following tools may have been involved; **edit to include only tools you actually used**.
+List **every** AI assistant/tool used for this assessment, even if one only reviewed code or assisted with tests. Delete unused blank tool blocks and add more as required. Do **not** state that you personally tested something another tool ran unless you independently ran it.
 
-- **ChatGPT (OpenAI):** Helped draft the simulated library case study, PostgreSQL schema, example SQL scripts, documentation and the GitHub repository.
-- **[Name of the other AI tool, if used]:** [Specify assistance, e.g. assessment review and running PostgreSQL 16 tests; do not claim you personally repeated them.]
-- **Other tools, references and datasets:** [List any that you used, including PostgreSQL docs, PostgreSQL 16 and your own synthetic data.]
+## Tool 1
 
-**Verification I personally completed:** [Enter commands you ran and results you inspected. Distinguish another AI's outputs from your own verification.]
+**Tool:** **FILL TOOL NAME, PROVIDER AND (IF KNOWN) MODEL**  
+**What I used it for:** **FILL CONCRETE TASKS AND FILES**  
+**How I reviewed / tested / corrected it:** **FILL COMMANDS, OUTPUT FILES, EDITS AND LIMITATIONS FROM MY ACTUAL WORK**
 
-**Changes I independently made:** [Explain exactly what you checked, corrected and learned.]
+## Tool 2
 
-**Individual reflection:** [Your authentic observations, challenges, and trade-offs.]
+**Tool:** **FILL TOOL NAME, PROVIDER AND (IF KNOWN) MODEL**  
+**What I used it for:** **FILL CONCRETE TASKS AND FILES**  
+**How I reviewed / tested / corrected it:** **FILL COMMANDS, OUTPUT FILES, EDITS AND LIMITATIONS FROM MY ACTUAL WORK**
 
-Do not include claims of tests you did not run. Attribute assistance accurately and follow your institution's AI-use policy.
+## Tool 3 (optional)
+
+**Tool:** **FILL TOOL NAME, PROVIDER AND (IF KNOWN) MODEL**  
+**What I used it for:** **FILL CONCRETE TASKS AND FILES**  
+**How I reviewed / tested / corrected it:** **FILL COMMANDS, OUTPUT FILES, EDITS AND LIMITATIONS FROM MY ACTUAL WORK**
+
+### Human responsibility and limits
+
+**I take responsibility for everything submitted, including the accuracy of all results, the authenticity of my evidence, the citations, and the final explanations.**
+
+**What I personally verified:** **FILL FROM MY OWN WORK**.  
+**What I could not run or verify:** **FILL TRUTHFULLY; DO NOT HIDE LIMITATIONS**.
