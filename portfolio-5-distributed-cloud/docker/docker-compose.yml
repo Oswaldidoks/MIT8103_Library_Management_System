@@ -1,0 +1,53 @@
+# Standalone PostgreSQL 16 primary + asynchronous streaming-replication standby.
+# Local education ONLY. No automatic failover; no TLS; not production hardened.
+services:
+  primary:
+    image: postgres:16.6
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?Copy .env.example to .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set fake local password}
+      POSTGRES_DB: ${POSTGRES_DB:-library_replica_lab}
+      REPLICATION_USER: ${REPLICATION_USER:?Set replication user}
+      REPLICATION_PASSWORD: ${REPLICATION_PASSWORD:?Set fake replication password}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - '127.0.0.1:55432:5432'
+    volumes:
+      - primary_data:/var/lib/postgresql/data
+      - ./primary/postgresql.conf:/etc/postgresql/library-primary.conf:ro
+      - ./primary/pg_hba_replication.conf:/etc/postgresql/pg_hba_replication.conf:ro
+      - ./primary/01_init_replication.sh:/docker-entrypoint-initdb.d/01_init_replication.sh:ro
+    command: ['postgres','-c','config_file=/etc/postgresql/library-primary.conf','-c','data_directory=/var/lib/postgresql/data/pgdata']
+    healthcheck:
+      test: ['CMD-SHELL','pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
+      interval: 5s
+      timeout: 5s
+      retries: 20
+  standby:
+    image: postgres:16.6
+    restart: unless-stopped
+    depends_on:
+      primary:
+        condition: service_healthy
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?Copy .env.example to .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set fake local password}
+      POSTGRES_DB: ${POSTGRES_DB:-library_replica_lab}
+      REPLICATION_USER: ${REPLICATION_USER:?Set replication user}
+      REPLICATION_PASSWORD: ${REPLICATION_PASSWORD:?Set fake replication password}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - '127.0.0.1:55433:5432'
+    volumes:
+      - standby_data:/var/lib/postgresql/data
+      - ./replica/standby_init.sh:/usr/local/bin/library-standby-init.sh:ro
+    entrypoint: ['bash','/usr/local/bin/library-standby-init.sh']
+    healthcheck:
+      test: ['CMD-SHELL','pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
+      interval: 5s
+      timeout: 5s
+      retries: 20
+volumes:
+  primary_data:
+  standby_data:

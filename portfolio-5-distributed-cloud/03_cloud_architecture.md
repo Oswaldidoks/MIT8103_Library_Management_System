@@ -1,26 +1,35 @@
-# Portfolio 5 — PostgreSQL distribution and cloud design
+# Portfolio 5 — PostgreSQL cloud architecture **design**
 
-## Proposed architecture (not a deployed service)
+This document describes a **proposed architecture** for Crescent City Library. An optional single-host Docker lab in [docker/](docker/) implements a primary and asynchronous physical streaming standby; this is **not** a deployed cloud service and does **not** provide automatic failover.
 
 ```text
-Library application
-  |         \-- reporting reads (may tolerate replica lag)
-  |                  |
-  v                  v
-PostgreSQL PRIMARY --WAL stream--> PostgreSQL READ REPLICA
-  |
-  +--> scheduled base backups + WAL archive (point-in-time recovery)
+  Library application -- committed checkout, return, fines --> PRIMARY
+       |                                                 |
+       +-- tolerated-lag catalogue & reporting ----------+--> STANDBY (async WAL)
+                                                           ^
+  PRIMARY -- WAL stream ------------------------------------+
+       |
+       +-- independent base backups + WAL archive (planned, NOT implemented)
 ```
 
-**Primary:** all checkouts, returns, fine payments and read-after-write confirmations use the primary, preserving immediate visibility of writes. **Replica:** reporting and catalogue searches may use a standby if lag is acceptable. Asynchronous replication has a nonzero data-loss risk on sudden primary failure; a read replica alone is not automatic failover. A managed plan must explicitly provide promotion and failover policy.
+All writes go to the primary. An immediate availability check after checkout must also use the primary or explicitly wait for the replica to replay the relevant transaction. Catalogue/reporting reads may use the standby when staleness is acceptable. Asynchronous replication can lose acknowledged-but-not-replayed transactions if a standby is promoted after primary failure; replication alone is **not** a backup system.
 
-**Data partitioning:** the local `loan_events` hash partition exercise is PostgreSQL partitioning **within one server**, not multi-node sharding. True sharding would distribute subsets over separate database nodes and require routing, resharding and cross-node consistency policies. This project does not claim it has implemented sharding.
+### What I observed vs what I proposed — FILL FROM MY OWN EVIDENCE
 
-**Evidence:** Run `01_partition_exercise.sql` and capture output. Run `02_replication_diagnostics.sql`. With no standby, an empty `pg_stat_replication` result is a factual observation, **not evidence of successful replication**. If you later deploy replicas, add topology, PostgreSQL version, safe configuration excerpts, standby `pg_is_in_recovery()` and primary `pg_stat_replication` evidence, as well as RPO/RTO assumptions.
+| Component | Proposed | Observed by me (commands, dates, evidence files) |
+|---|---|---|
+| Hash partition experiment | Existing single-server SQL | **FILL FROM MY OWN EVIDENCE** |
+| Replication diagnostics | Existing diagnostic SQL | **FILL FROM MY OWN EVIDENCE** |
+| Streaming primary/standby | Optional Docker files | **FILL FROM MY OWN EVIDENCE / NOT RUN** |
+| Replicated probe | Primary INSERT, standby SELECT | **FILL FROM MY OWN EVIDENCE / NOT RUN** |
+| Standby write rejection | Expected SQLSTATE 25006 | **FILL FROM MY OWN EVIDENCE / NOT RUN** |
+| Promotion/failover | Manual design only | **FILL FROM MY OWN EVIDENCE / NOT RUN** |
+| Managed cloud, backups and point-in-time restore | Design, not configured | **NOT IMPLEMENTED**, unless I actually deploy it |
 
-**Security:** avoid passwords in GitHub. Use TLS, least-privilege roles, restricted networks, encrypted backups and restore drills.
+### Single-node partitioning is not sharding
 
-References:
-- https://www.postgresql.org/docs/16/warm-standby.html
-- https://www.postgresql.org/docs/16/ddl-partitioning.html
-- https://www.postgresql.org/docs/16/continuous-archiving.html
+`01_partition_exercise.sql` uses local hash partitions. Multi-node sharding would route data by a chosen key (potentially branch_id) across separate database servers and would require coordination for shared borrower history, cross-shard queries, capacity balancing and re-sharding. The trade-offs are considered further in [04_consistency_analysis.md](04_consistency_analysis.md).
+
+### References
+
+[Streaming replication](https://www.postgresql.org/docs/16/warm-standby.html); [Partitioning](https://www.postgresql.org/docs/16/ddl-partitioning.html); [Continuous archiving](https://www.postgresql.org/docs/16/continuous-archiving.html).
