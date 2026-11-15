@@ -1,0 +1,8 @@
+# SHA-256 of original screenshots provided by the student on 15 November 2026.
+# Hashes computed on unmodified PNG bytes from Portfolio4_Windows_Genuine_Screenshots.zip.
+# This manifest is provenance documentation, not a substitute for uploaded image evidence.
+04bc7fe72a47b3dd4be2229c411c93696db65b9ad4bf904b2f646dc58896d235  01_docker_mongodb_started.png
+a45fc6f026632406e2ce395717b098c38607898dba0432be92cbda2fc6228c36  02_mongodb_seed_8_documents.png
+18c27211ac03c7569b94af9bcceb5c1926dae8a6610d496b9a095f60af8da786  03_mongodb_explain_before_and_index_creation.png
+aa0c47515ecb194556566c05ff944a657e1379adc957d86f8110e645ffdda965  04_mongodb_explain_after_index.png
+5d3e2eb17d308622e74008d58e6c241af29f15f3b9ab9f5d9acf2b131f33a7ce  05_mongodb_explain_after_summary.png
