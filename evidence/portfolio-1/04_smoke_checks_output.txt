@@ -1,0 +1,50 @@
+-- EVIDENCE CAPTURE
+-- Generated: 2026-11-15 01:35:54 UTC
+-- Source script: tests/01_smoke_checks.sql
+-- Environment: PostgreSQL 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, 64-bit
+-- Run by: automated sandbox run (Claude), NOT the student's own machine
+-- ----------------------------------------------------------------
+SET search_path TO library,public;
+SET
+SELECT COUNT(*) AS branch_count FROM branches;
+ branch_count 
+--------------
+            2
+(1 row)
+
+SELECT COUNT(*) AS book_count FROM books;
+ book_count 
+------------
+          8
+(1 row)
+
+SELECT COUNT(*) AS copy_count FROM book_copies;
+ copy_count 
+------------
+         12
+(1 row)
+
+SELECT COUNT(*) AS borrower_count FROM borrowers;
+ borrower_count 
+----------------
+              8
+(1 row)
+
+SELECT COUNT(*) AS loan_count FROM loans;
+ loan_count 
+------------
+          6
+(1 row)
+
+SELECT COUNT(*) AS open_loans FROM loans WHERE returned_at IS NULL;
+ open_loans 
+------------
+          2
+(1 row)
+
+SELECT COUNT(*) AS duplicate_active_copies FROM (SELECT copy_id FROM loans WHERE returned_at IS NULL GROUP BY copy_id HAVING COUNT(*)>1) x;
+ duplicate_active_copies 
+-------------------------
+                       0
+(1 row)
+

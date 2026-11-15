@@ -1,0 +1,66 @@
+-- EVIDENCE CAPTURE
+-- Generated: 2026-11-15 01:35:54 UTC
+-- Source script: portfolio-1-database-design/03_integrity_checks.sql
+-- Environment: PostgreSQL 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, 64-bit
+-- Run by: automated sandbox run (Claude), NOT the student's own machine
+-- ----------------------------------------------------------------
+SET search_path TO library,public;
+SET
+-- Inspect schema and test the one-open-loan-per-copy invariant.
+SELECT table_name FROM information_schema.tables WHERE table_schema='library' ORDER BY table_name;
+   table_name    
+-----------------
+ authors
+ book_authors
+ book_copies
+ books
+ borrowers
+ branches
+ categories
+ fine_payments
+ fines
+ loans
+ staff
+ v_catalogue
+ v_fine_balances
+ v_loan_status
+(14 rows)
+
+SELECT * FROM v_catalogue ORDER BY title;
+ book_id |     isbn      |             title              | category_name |         authors          | total_copies | available_copies 
+---------+---------------+--------------------------------+---------------+--------------------------+--------------+------------------
+       4 | 9781000000004 | Business in West Africa        | Business      | Jonah Clarke             |            2 |                2
+       5 | 9781000000005 | Cities and Memory              | History       | Bisi Cole                |            1 |                0
+       6 | 9781000000006 | Concurrency by Example         | Computing     | David Mensah             |            2 |                2
+       8 | 9781000000008 | Data for Managers              | Business      | Jonah Clarke             |            1 |                1
+       2 | 9781000000002 | Introduction to Data Modelling | Computing     | David Mensah, Nora Wells |            1 |                0
+       7 | 9781000000007 | Markets at Midnight            | Fiction       | Tari Okafor              |            1 |                1
+       1 | 9781000000001 | Practical PostgreSQL           | Computing     | Nora Wells               |            2 |                2
+       3 | 9781000000003 | The River at Dawn              | Fiction       | Mina Adeyemi             |            2 |                1
+(8 rows)
+
+SELECT * FROM v_loan_status ORDER BY loan_id;
+ loan_id | borrower_id | copy_id |       loaned_at        |         due_at         |      returned_at       | loan_status | overdue_days 
+---------+-------------+---------+------------------------+------------------------+------------------------+-------------+--------------
+       1 |           1 |       1 | 2026-10-03 00:00:00+00 | 2026-10-17 00:00:00+00 | 2026-10-20 00:00:00+00 | RETURNED    |            3
+       2 |           2 |       2 | 2026-10-14 00:00:00+00 | 2026-10-28 00:00:00+00 | 2026-10-26 00:00:00+00 | RETURNED    |            0
+       3 |           3 |       3 | 2026-10-24 00:00:00+00 | 2026-11-07 00:00:00+00 |                        | OVERDUE     |            8
+       4 |           4 |       4 | 2026-11-08 00:00:00+00 | 2026-11-22 00:00:00+00 |                        | OPEN        |            0
+       5 |           5 |       8 | 2026-10-05 00:00:00+00 | 2026-10-19 00:00:00+00 | 2026-10-21 00:00:00+00 | RETURNED    |            2
+       6 |           6 |       9 | 2026-10-17 00:00:00+00 | 2026-10-31 00:00:00+00 | 2026-10-28 00:00:00+00 | RETURNED    |            0
+(6 rows)
+
+SELECT * FROM v_fine_balances ORDER BY fine_id;
+ fine_id | loan_id | assessed_amount | paid_amount | outstanding_amount 
+---------+---------+-----------------+-------------+--------------------
+       1 |       1 |          150.00 |       50.00 |             100.00
+       2 |       5 |          100.00 |      100.00 |               0.00
+(2 rows)
+
+SELECT indexname,indexdef FROM pg_indexes WHERE schemaname='library' AND tablename='loans';
+         indexname          |                                                     indexdef                                                      
+----------------------------+-------------------------------------------------------------------------------------------------------------------
+ loans_pkey                 | CREATE UNIQUE INDEX loans_pkey ON library.loans USING btree (loan_id)
+ ux_loans_one_open_per_copy | CREATE UNIQUE INDEX ux_loans_one_open_per_copy ON library.loans USING btree (copy_id) WHERE (returned_at IS NULL)
+(2 rows)
+
