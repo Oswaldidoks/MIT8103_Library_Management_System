@@ -28,11 +28,11 @@ Discuss ERD, physical copies versus titles, primary/foreign keys, 1NF–3NF and 
 
 ## 3. Portfolio 2: query processing and optimisation (~130–160 words)
 
-Report borrower/date comparison and optional trigram experiment using **actual** before/after plan nodes, median execution times (three runs), row counts, buffer usage and index size. Explain planner choice and index maintenance trade-offs. **FILL MY OWN EVIDENCE:** before/after EXPLAIN files and analysis table.
+**Documented in imported automated Claude PostgreSQL 16.15 logs (not personally run by the student):** a synthetic 100,000-loan borrower/date experiment changed from a sequential scan to an index scan after adding the borrower/date index. Three-run median execution time was **8.010 ms before** and **0.059 ms after**, on that dataset. Reference [original plans and analysis](../evidence/portfolio-2/07_imported_benchmark_summary.md). A separately prepared trigram title-search experiment has **no supplied execution evidence**. **STUDENT TO COMPLETE:** interpret planner, buffers, index storage and limitations in their own words and add any personal rerun evidence.
 
 ## 4. Portfolio 3: transactions/concurrency (~130–160 words)
 
-Summarise checkout lock, partial unique index, COMMIT/ROLLBACK and two concurrent sessions; compare PostgreSQL READ COMMITTED, REPEATABLE READ and SERIALIZABLE where actually tested. **FILL MY OWN EVIDENCE:** screenshots and real error SQLSTATEs/outcomes. Do not report a timing-dependent error as observed without seeing it.
+**Imported automated PostgreSQL 16.15 logs, not student-run:** COMMIT retained a checkout and ROLLBACK undid another; in the two-session checkout test, session B received `Copy 10 is already on loan` after session A committed. Returning seeded loan 3 produced a **NGN 400** overdue fine. The READ COMMITTED demonstration read **10 then 11**; REPEATABLE READ read **10 then 10**. See [transaction evidence files](../evidence/portfolio-3/). Additional deadlock and SERIALIZABLE experiments are scripts only, **not evidenced as executed**. **STUDENT TO COMPLETE:** explain the locking and isolation effects in personal words, add screenshots from any experiments personally repeated.
 
 ## 5. Portfolio 4: NoSQL and advanced models (~120–150 words)
 
