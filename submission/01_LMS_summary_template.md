@@ -40,7 +40,7 @@ Summarise checkout lock, partial unique index, COMMIT/ROLLBACK and two concurren
 
 ## 6. Portfolio 5: distributed/cloud (~120–150 words)
 
-Distinguish single-node partitioning from conceptual sharding. Discuss the optional PostgreSQL primary/standby streaming Docker experiment, actual observed LSN/replica read-only/probe results **only if run**, and design risks (stale read-after-write, async loss, failover). **FILL MY OWN EVIDENCE:** primary and standby outputs plus observed/proposed table; label cloud as design unless deployed.
+**Imported automated PostgreSQL 16.15 evidence, not student-run:** two events appeared in local hash partitions; the diagnostic server had `pg_is_in_recovery() = false` and **zero** rows in `pg_stat_replication` (no connected standby). This supports a single-node partitioning demonstration and a standalone-primary observation, **not** actual streaming replication. Discuss the proposed PostgreSQL primary/standby Docker lab, replica lag, stale availability after checkout, failover and why partitioning is not multi-node sharding. **STUDENT TO COMPLETE:** only describe successful replica LSN/probe tests or standby write failures when personally observed and recorded.
 
 ## 7. Individual technical reflection (~100–130 words)
 
