@@ -1,0 +1,22 @@
+# Local-only standalone MongoDB experiment for Crescent City Library.
+# Do not treat it as a replicated/production database.
+services:
+  mongodb:
+    image: mongo:7.0.16
+    restart: unless-stopped
+    ports:
+      - '127.0.0.1:27018:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USERNAME:?Copy .env.example to .env}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:?Set local password in .env}
+      MONGO_DB: ${MONGO_DB:-library_document_demo}
+    volumes:
+      - mongo_data:/data/db
+      - ./:/scripts:ro
+    healthcheck:
+      test: ['CMD-SHELL','mongosh --quiet --eval "db.adminCommand({ping:1}).ok" --username "$${MONGO_INITDB_ROOT_USERNAME}" --password "$${MONGO_INITDB_ROOT_PASSWORD}" --authenticationDatabase admin | grep -q 1']
+      interval: 10s
+      timeout: 10s
+      retries: 12
+volumes:
+  mongo_data:
