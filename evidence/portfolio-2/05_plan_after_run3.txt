@@ -1,0 +1,27 @@
+-- EVIDENCE CAPTURE
+-- Generated: 2026-11-15 01:35:57 UTC
+-- Source script: portfolio-2-query-optimisation/05_plan_after.sql
+-- Environment: PostgreSQL 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, 64-bit
+-- Run by: automated sandbox run (Claude), NOT the student's own machine
+-- ----------------------------------------------------------------
+-- Repeat the IDENTICAL query after 04_index.sql.
+EXPLAIN (ANALYZE, BUFFERS)
+SELECT loan_id,borrower_id,loaned_at,due_at
+FROM library.loans
+WHERE borrower_id=4
+  AND loaned_at>=CURRENT_TIMESTAMP-interval '365 days'
+ORDER BY loaned_at DESC
+LIMIT 25;
+                                                                 QUERY PLAN                                                                  
+---------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=0.42..69.92 rows=25 width=32) (actual time=0.027..0.038 rows=25 loops=1)
+   Buffers: shared hit=11
+   ->  Index Scan using idx_loans_borrower_date on loans  (cost=0.42..3302.80 rows=1188 width=32) (actual time=0.026..0.035 rows=25 loops=1)
+         Index Cond: ((borrower_id = 4) AND (loaned_at >= (CURRENT_TIMESTAMP - '365 days'::interval)))
+         Buffers: shared hit=11
+ Planning:
+   Buffers: shared hit=129
+ Planning Time: 0.356 ms
+ Execution Time: 0.058 ms
+(9 rows)
+

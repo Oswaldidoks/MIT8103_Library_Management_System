@@ -1,0 +1,37 @@
+-- EVIDENCE CAPTURE
+-- Generated: 2026-11-15 01:35:56 UTC
+-- Source script: portfolio-2-query-optimisation/03_plan_before.sql
+-- Environment: PostgreSQL 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, 64-bit
+-- Run by: automated sandbox run (Claude), NOT the student's own machine
+-- ----------------------------------------------------------------
+-- Run AFTER 02_benchmark_seed.sql. Baseline without the test index.
+DROP INDEX IF EXISTS library.idx_loans_borrower_date;
+psql:/home/claude/repo2/MIT8103_Library_Management_System-main/portfolio-2-query-optimisation/03_plan_before.sql:2: NOTICE:  index "idx_loans_borrower_date" does not exist, skipping
+DROP INDEX
+ANALYZE library.loans;
+ANALYZE
+EXPLAIN (ANALYZE, BUFFERS)
+SELECT loan_id,borrower_id,loaned_at,due_at
+FROM library.loans
+WHERE borrower_id=4
+  AND loaned_at>=CURRENT_TIMESTAMP-interval '365 days'
+ORDER BY loaned_at DESC
+LIMIT 25;
+                                                     QUERY PLAN                                                      
+---------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=3365.47..3365.53 rows=25 width=32) (actual time=8.060..8.064 rows=25 loops=1)
+   Buffers: shared hit=1334
+   ->  Sort  (cost=3365.47..3368.25 rows=1111 width=32) (actual time=8.058..8.060 rows=25 loops=1)
+         Sort Key: loaned_at DESC
+         Sort Method: top-N heapsort  Memory: 28kB
+         Buffers: shared hit=1334
+         ->  Seq Scan on loans  (cost=0.00..3334.12 rows=1111 width=32) (actual time=0.008..7.832 rows=1161 loops=1)
+               Filter: ((borrower_id = 4) AND (loaned_at >= (CURRENT_TIMESTAMP - '365 days'::interval)))
+               Rows Removed by Filter: 98845
+               Buffers: shared hit=1334
+ Planning:
+   Buffers: shared hit=47
+ Planning Time: 0.201 ms
+ Execution Time: 8.082 ms
+(14 rows)
+

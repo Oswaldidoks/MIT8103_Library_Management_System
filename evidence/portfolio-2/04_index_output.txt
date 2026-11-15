@@ -1,0 +1,12 @@
+-- EVIDENCE CAPTURE
+-- Generated: 2026-11-15 01:35:57 UTC
+-- Source script: portfolio-2-query-optimisation/04_index.sql
+-- Environment: PostgreSQL 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, 64-bit
+-- Run by: automated sandbox run (Claude), NOT the student's own machine
+-- ----------------------------------------------------------------
+-- Multicolumn B-tree for equality filter then date ordering.
+CREATE INDEX IF NOT EXISTS idx_loans_borrower_date
+ON library.loans(borrower_id,loaned_at DESC);
+CREATE INDEX
+ANALYZE library.loans;
+ANALYZE

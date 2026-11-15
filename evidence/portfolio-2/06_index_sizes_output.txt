@@ -1,0 +1,24 @@
+-- EVIDENCE CAPTURE
+-- Generated: 2026-11-15 01:35:57 UTC
+-- Source script: (supplementary) table and index sizes
+-- Environment: PostgreSQL 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, 64-bit
+-- Run by: automated sandbox run (Claude), NOT the student's own machine
+-- ----------------------------------------------------------------
+SET search_path TO library,public;
+SET
+SELECT 'loans table' AS object, pg_size_pretty(pg_relation_size('loans')) AS size
+UNION ALL SELECT indexrelid::regclass::text, pg_size_pretty(pg_relation_size(indexrelid)) FROM pg_index WHERE indrelid='loans'::regclass;
+           object           |  size   
+----------------------------+---------
+ loans table                | 10 MB
+ loans_pkey                 | 2208 kB
+ ux_loans_one_open_per_copy | 16 kB
+ idx_loans_borrower_date    | 3104 kB
+(4 rows)
+
+SELECT count(*) AS loan_rows FROM loans;
+ loan_rows 
+-----------
+    100006
+(1 row)
+
