@@ -4,15 +4,15 @@ List **every** AI assistant/tool used for this assessment, even if one only revi
 
 ## Tool 1
 
-**Tool:** **FILL TOOL NAME, PROVIDER AND (IF KNOWN) MODEL**  
-**What I used it for:** **FILL CONCRETE TASKS AND FILES**  
-**How I reviewed / tested / corrected it:** **FILL COMMANDS, OUTPUT FILES, EDITS AND LIMITATIONS FROM MY ACTUAL WORK**
+**Tool:** ChatGPT (OpenAI; model/version only if known)  
+**What I used it for:** Drafting PostgreSQL and MongoDB exercises, structuring the Crescent City Library repository, preparing evidence guides and submission templates, and editing GitHub documentation.  
+**How I reviewed / tested / corrected it:** **STUDENT TO COMPLETE FROM PERSONAL WORK.** Do not imply you personally tested scripts run by an assistant.
 
 ## Tool 2
 
-**Tool:** **FILL TOOL NAME, PROVIDER AND (IF KNOWN) MODEL**  
-**What I used it for:** **FILL CONCRETE TASKS AND FILES**  
-**How I reviewed / tested / corrected it:** **FILL COMMANDS, OUTPUT FILES, EDITS AND LIMITATIONS FROM MY ACTUAL WORK**
+**Tool:** Claude (Anthropic; model/version only if known)  
+**What I used it for:** An automated PostgreSQL 16.15 review and capture of 27 SQL execution-output logs on 15 November 2026, as described in the original imported evidence provenance.  
+**How I reviewed / tested / corrected it:** **STUDENT TO COMPLETE FROM PERSONAL WORK.** The imported Claude logs are AI-generated execution captures, not personal terminal screenshots.
 
 ## Tool 3 (optional)
 

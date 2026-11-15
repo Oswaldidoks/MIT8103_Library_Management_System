@@ -36,7 +36,7 @@ Summarise checkout lock, partial unique index, COMMIT/ROLLBACK and two concurren
 
 ## 5. Portfolio 4: NoSQL and advanced models (~120–150 words)
 
-Describe MongoDB embedded catalogue as the **separate NoSQL implementation**, with PostgreSQL JSONB as a comparison. Explain actual subject search, index, document update and suitability/consistency trade-offs. **FILL MY OWN EVIDENCE:** Docker/MongoDB version, seeded document, query output, executionStats. If MongoDB was not run, state that rather than claiming an implementation.
+**Documented from student-provided Windows screenshots (15 November 2026):** MongoDB 7.0.16 was started with Docker Desktop and the fictional catalogue seed reported **8 documents**. The subject filter used a **COLLSCAN examining 8 documents** before an experimental index, and an **IXSCAN using `subjects_1_lab`, examining 2 documents and 2 keys**, afterward. These are screenshot observations, not independently executed by this assistant. The small demonstration does not establish a general speed improvement. Explain how MongoDB's embedded authors/copies differ from PostgreSQL's normalised relational source of truth and why checkout consistency requires care. **STUDENT TO SUPPLY:** any additional `02_queries.js`/`03_indexes.js` output actually run and personal analysis; do not claim an availability update was observed unless evidence exists.
 
 ## 6. Portfolio 5: distributed/cloud (~120–150 words)
 

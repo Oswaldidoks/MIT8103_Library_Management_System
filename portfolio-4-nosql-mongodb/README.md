@@ -20,3 +20,9 @@ docker compose exec -T mongodb sh -c 'mongosh --quiet -u "$MONGO_INITDB_ROOT_USE
 For a true **before/after**, `04_explain.js` drops and recreates **only** its own `subjects_1_lab` index, then prints actual `executionStats` in both states. Capture the output to `evidence/portfolio-4/`. Eight documents are not a realistic large-scale benchmark; a COLLSCAN is not an error. `02_queries.js` mutates one demonstration availability flag; the change is **not synchronised** to PostgreSQL. See `05_suitability.md`.
 
 **Stop (retains volume):** `docker compose down`. **Destroy local MongoDB data:** `docker compose down -v` (destructive). The service binds only on `127.0.0.1` and is **not production secured**; Docker Compose may expose passwords inside local container metadata, so use fake credentials in this lab and never publish `docker inspect` output or `.env`.
+
+## Current Windows screenshot evidence (15 November 2026)
+
+The student supplied real PowerShell/Docker screenshots, separate from the imported Claude/PostgreSQL logs. They show MongoDB 7.0.16, a seed result reporting **eight** fictional catalogue documents, and a before/after `04_explain.js` query-plan comparison: collection scan of **eight** documents before the index, then index scan using `subjects_1_lab` with **two documents and two index keys** examined. These observations do **not** prove a general speedup on an eight-document dataset. See [evidence documentation](../evidence/portfolio-4/README_WINDOWS_SCREENSHOTS.md). The screenshots are supplied by the student and **not executed by me**.
+
+**Not yet documented as successful from these screenshots:** standalone `02_queries.js` and `03_indexes.js` runs, plus the PostgreSQL primary/standby experiment in Portfolio 5. Do not claim those specific scripts were run without additional evidence.
