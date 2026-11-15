@@ -1,14 +1,33 @@
-# Isolation level experiment — PostgreSQL 16
+# PostgreSQL 16 transaction isolation — observation worksheet
 
-This experiment demonstrates a **non-repeatable read**, separately from the existing `FOR UPDATE` checkout exercise.
+**Status: not executed by me.** Two terminals and the same database are required; record actual outcomes. Existing READ COMMITTED/REPEATABLE READ demo scripts `06_isolation_setup.sql`, `07_read_committed_a.sql`, `08_isolation_b.sql` and `09_repeatable_read_a.sql` remain unchanged.
 
-Use two psql terminal windows connecting to the **same database**:
-1. Run `06_isolation_setup.sql` to set counter `tally=10`.
-2. Run `07_read_committed_a.sql` in **session A**. While A sleeps for 12 seconds, run `08_isolation_b.sql` in **session B**.
-3. A should see 10 then 11 if B commits before A's second read. This is expected under READ COMMITTED.
-4. Run setup again. In session A run `09_repeatable_read_a.sql`; while A sleeps run session B's `08_isolation_b.sql` again.
-5. A should see 10 then 10 under REPEATABLE READ, even though B has committed. After A commits, a new SELECT should see 11.
+| PostgreSQL isolation level | Dirty reads | Non-repeatable reads | Phantom-like changes | Write-skew / serialization anomalies |
+|---|---|---|---|---|
+| READ COMMITTED | Prevented | Possible between statements | Possible between statements | Possible |
+| REPEATABLE READ (snapshot isolation) | Prevented | Prevented by stable snapshot | Prevented for repeated snapshot reads | **Possible** (write skew across different rows) |
+| SERIALIZABLE (SSI) | Prevented | Prevented | Prevented | Detected/aborted as `40001` where concurrent history would be non-serializable; applications must retry |
 
-**Important:** The values depend on *timing*. If you launch B after A finishes sleeping, the demonstration is inconclusive; rerun it. Record both terminal timestamps and output, and interpret using your own tests.
+PostgreSQL **does not implement READ UNCOMMITTED as a weaker level**; it behaves as READ COMMITTED. PostgreSQL's REPEATABLE READ is stronger than the SQL minimum in preventing phantom reads but can still allow write skew. SERIALIZABLE uses Serializable Snapshot Isolation (SSI): it may abort one transaction instead of waiting, so the entire transaction must be retried. See the [PostgreSQL transaction isolation documentation](https://www.postgresql.org/docs/16/transaction-iso.html).
 
-READ COMMITTED creates a new snapshot for each ordinary SELECT; REPEATABLE READ uses a stable snapshot for the transaction. Neither of these two examples is meant to trigger a serialization failure. See https://www.postgresql.org/docs/16/transaction-iso.html
+## Capture exercises
+
+1. Reset `06_isolation_setup.sql` to `tally=10`; run READ COMMITTED session A and session B while A sleeps. Expected **if timing is correct**: A reads 10 then 11.
+2. Reset again; run REPEATABLE READ session A/B. Expected **if timing is correct**: A reads 10 twice; a new transaction sees B's committed 11.
+3. Run `05_without_lock_race.sql`, then 05a/05b in two sessions. The unique partial index must reject a second open loan, even without the PL/pgSQL checkout function. Record whether B waited.
+4. Run `11_deadlock_setup.sql`, then `12_deadlock_session_a.sql` and `13_deadlock_session_b.sql` simultaneously. Capture a real deadlock `40P01` if it occurs; one transaction can be rolled back.
+5. Run `14_serializable_setup.sql`, then `15_serializable_session_a.sql` and `16_serializable_session_b.sql` simultaneously. A write-skew-style conflict may produce `40001`. **Expected-not-guaranteed:** scheduling and snapshots determine whether both transactions overlap meaningfully. Reset and repeat if inconclusive.
+
+## Retry pattern for a real application
+
+Catch SQLSTATE `40P01` (deadlock) or `40001` (serialization failure); rollback the failed transaction, wait with bounded exponential backoff plus jitter, and **rerun the complete transaction**, including reading the current business state and validating invariants, up to a configured retry limit. Apply consistent lock ordering when possible to reduce deadlock frequency. Do not blindly replay side effects such as sending emails or payments without idempotency protection.
+
+| Evidence item | FILL FROM MY OWN EVIDENCE |
+|---|---|
+| Actual database version | |
+| A/B READ COMMITTED outputs | |
+| A/B REPEATABLE READ outputs | |
+| Direct-index race outcome | |
+| Deadlock SQLSTATE and sessions | |
+| Serializable SQLSTATE and sessions | |
+| My explanation of observed anomalies | |
