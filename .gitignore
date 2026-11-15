@@ -23,3 +23,9 @@ Thumbs.db
 __pycache__/
 *.pyc
 # Evidence files should be added deliberately after redaction; do not ignore them.
+
+# Locally prepared, personally identified LMS submission bundles.
+# Keep student IDs, matric numbers and personalised reports out of the public repo.
+/private_submission/
+/_private_submission/
+/personal_submission/

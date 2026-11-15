@@ -37,6 +37,10 @@ Previously captured PostgreSQL 16.15 outputs, source attribution and execution c
 
 The fine policy is a simple NGN 50/day rule without grace periods or caps; reservations, loan limits and enterprise-grade access control are out of scope. Benchmark loans/books are synthetic and must be removed or clearly separated from normal sample data. MongoDB's embedded-copy availability is a *demonstration* and is not transactionally synchronised with PostgreSQL. The Docker streaming-replication example is a local learning lab, not a production high-availability or automatic-failover deployment. Hash partitioning on one PostgreSQL server is **not sharding**. Asynchronous replicas can return stale reads and may lose transactions during forced failover.
 
+## Official LMS filename convention
+
+For the CA September Cohort 2026 LMS submission, create the **local submission folder** as `Surname_Firstname_StudentID/`. Name uploaded documents `Surname_Firstname_DocumentType.ext` (no student ID in the filename). Use the matric number **inside** the document where requested, not as part of a path; slashes cannot safely be used in file names. See [submission naming and privacy guide](submission/06_lms_naming_and_privacy.md). Keep personally identifying student details out of this public source repository; prepare the identified package locally for LMS submission.
+
 ## Contributing / progressive commits
 
 Make small, verifiable commits grouped by portfolio. Keep a meaningful commit series for each component (design → experiment → documentation → evidence). A series recorded over time should reflect real work; **do not alter timestamps or simulate activity**. Never commit passwords, credentials, real borrower records or made-up outputs. The assessment brief requires a private repository with assessor access; use GitHub collaborators to share it.

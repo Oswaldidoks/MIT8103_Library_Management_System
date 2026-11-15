@@ -2,8 +2,11 @@
 
 **Submission:** final document must be **2–3 pages** (not this full working template); target roughly **850–1,050 words** depending on figures and formatting. Adapt word budgets to space. This template is **not** the student's completed report. **Every result blank must be replaced by genuine evidence.**
 
-**Student / ID:** **FILL MY DETAILS**  
-**File:** `Surname_Firstname_StudentID_PortfolioSummary.docx` or `.pdf` under `Surname_Firstname_StudentID/`  
+**Student name:** **FILL SURNAME AND FIRST NAME IN YOUR LOCAL LMS COPY**  
+**Student ID:** **FILL IN YOUR LOCAL LMS COPY**  
+**Matric number:** **FILL IN YOUR LOCAL LMS COPY (BODY TEXT ONLY)**  
+**Folder:** `Surname_Firstname_StudentID/`  
+**File:** `Surname_Firstname_PortfolioSummary.docx` or `.pdf` under that folder. The student ID is **not** repeated in the filename.  
 **Repository:** `https://github.com/Oswaldidoks/MIT8103_Library_Management_System` (set private; add assessor as collaborator; follow brief)  
 **Database platform(s):** PostgreSQL **FILL ACTUAL VERSION**, MongoDB **FILL ACTUAL VERSION** if executed.
 
@@ -56,4 +59,4 @@ Distinguish single-node partitioning from conceptual sharding. Discuss the optio
 - [ ] P3 both concurrency session outputs, isolation observations and errors where seen.
 - [ ] P4 separate MongoDB run, documents, indexes and actual explain output (JSONB comparison optional).
 - [ ] P5 partition results and (if deployed) actual primary/standby evidence, otherwise a clearly labelled design with limitations.
-- [ ] Authored reflection, references, all AI tools declared, 2–3 pages, exact required filename and repo access.
+- [ ] Authored reflection, references, all AI tools declared, 2–3 pages, official folder and file naming (`Surname_Firstname_StudentID/` and `Surname_Firstname_DocumentType.ext`), and repo access.
