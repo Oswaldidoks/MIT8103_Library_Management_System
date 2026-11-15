@@ -39,7 +39,7 @@ The fine policy is a simple NGN 50/day rule without grace periods or caps; reser
 
 ## Official LMS filename convention
 
-For the CA September Cohort 2026 LMS submission, create the **local submission folder** as `Surname_Firstname_StudentID/`. Name uploaded documents `Surname_Firstname_DocumentType.ext` (no student ID in the filename). Use the matric number **inside** the document where requested, not as part of a path; slashes cannot safely be used in file names. See [submission naming and privacy guide](submission/06_lms_naming_and_privacy.md). Keep personally identifying student details out of this public source repository; prepare the identified package locally for LMS submission.
+For the CA September Cohort 2026 LMS submission, create the **local submission folder** as `Surname_Firstname_StudentID/`. Name uploaded documents `Surname_Firstname_StudentID_DocumentType.ext` (include the student ID in every filename). Use the matric number **inside** the document where requested, not as part of a path; slashes cannot safely be used in file names. See [submission naming and privacy guide](submission/06_lms_naming_and_privacy.md). Keep personally identifying student details out of this public source repository; prepare the identified package locally for LMS submission.
 
 ## Contributing / progressive commits
 

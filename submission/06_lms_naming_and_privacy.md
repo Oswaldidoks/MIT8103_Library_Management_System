@@ -5,20 +5,20 @@ This guide reflects the **MIT 8103 Submission — CA September Cohort 2026** LMS
 ## Exact naming rules
 
 - **Folder:** `Surname_Firstname_StudentID/`
-- **Every uploaded file inside that folder:** `Surname_Firstname_DocumentType.ext`
+- **Every uploaded file inside that folder:** `Surname_Firstname_StudentID_DocumentType.ext`
 - **No spaces** and no generic names like `Assignment.pdf`, `Final File.docx` or `Document.pdf`
-- The **student ID appears in the folder name**. It is **not required in the file name**.
+- The **student ID appears in the folder name and every filename**.
 - The **matric/registration number** is a separate field. Put it in the summary's content where requested, **not** in the filename. A matric number containing `/` is not a suitable filesystem name.
 
 ### Illustrative fictional example (NOT actual student details)
 
 ```text
 Example_Member_123456789/
-  Example_Member_PortfolioSummary.pdf
-  Example_Member_PortfolioSummary.docx
-  Example_Member_README.txt
-  Example_Member_ERDiagram.png
-  Example_Member_Evidence.zip
+  Example_Member_123456789_PortfolioSummary.pdf
+  Example_Member_123456789_PortfolioSummary.docx
+  Example_Member_123456789_README.txt
+  Example_Member_123456789_ERDiagram.png
+  Example_Member_123456789_Evidence.zip
 ```
 
 ## Apply privately before uploading to the LMS

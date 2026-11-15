@@ -6,7 +6,7 @@
 **Student ID:** **FILL IN YOUR LOCAL LMS COPY**  
 **Matric number:** **FILL IN YOUR LOCAL LMS COPY (BODY TEXT ONLY)**  
 **Folder:** `Surname_Firstname_StudentID/`  
-**File:** `Surname_Firstname_PortfolioSummary.docx` or `.pdf` under that folder. The student ID is **not** repeated in the filename.  
+**File:** `Surname_Firstname_StudentID_PortfolioSummary.docx` or `.pdf` under that folder. The student ID **must also appear in the filename**, according to the latest LMS screenshot.  
 **Repository:** `https://github.com/Oswaldidoks/MIT8103_Library_Management_System` (set private; add assessor as collaborator; follow brief)  
 **Database platform(s):** PostgreSQL **FILL ACTUAL VERSION**, MongoDB **FILL ACTUAL VERSION** if executed.
 
@@ -59,4 +59,4 @@ Discuss ERD, physical copies versus titles, primary/foreign keys, 1NF–3NF and 
 - [ ] P3 both concurrency session outputs, isolation observations and errors where seen.
 - [ ] P4 separate MongoDB run, documents, indexes and actual explain output (JSONB comparison optional).
 - [ ] P5 partition results and (if deployed) actual primary/standby evidence, otherwise a clearly labelled design with limitations.
-- [ ] Authored reflection, references, all AI tools declared, 2–3 pages, official folder and file naming (`Surname_Firstname_StudentID/` and `Surname_Firstname_DocumentType.ext`), and repo access.
+- [ ] Authored reflection, references, all AI tools declared, 2–3 pages, official folder and file naming (`Surname_Firstname_StudentID/` and `Surname_Firstname_StudentID_DocumentType.ext`), and repo access.

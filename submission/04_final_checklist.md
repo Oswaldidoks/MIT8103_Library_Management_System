@@ -26,7 +26,7 @@ This is a **checklist** to confirm manually against the latest official LMS inst
 ## File naming and LMS
 
 - [ ] Submission folder name: `Surname_Firstname_StudentID` (replace placeholders; use the student ID, not the matric number).
-- [ ] Filenames: `Surname_Firstname_DocumentType.ext` (replace placeholders). The **student ID appears only in the folder name**, not in filenames.
+- [ ] Filenames: `Surname_Firstname_StudentID_DocumentType.ext` (replace placeholders). The **student ID must appear in both the folder and every filename**.
 - [ ] **No spaces**; avoid generic names such as `final.pdf` or `assignment.docx`. Put the matric number in the document body only, never in the path.
 - [ ] Submit required document(s) and GitHub URL by the actual deadline; confirm one-attempt submission rules and upload preview.
 - [ ] Similarity score **below 20%**, excluding bibliography, as specified; review the actual LMS report where available.
