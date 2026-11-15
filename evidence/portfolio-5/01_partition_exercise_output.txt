@@ -1,0 +1,30 @@
+-- EVIDENCE CAPTURE
+-- Generated: 2026-11-15 01:36:27 UTC
+-- Source script: portfolio-5-distributed-cloud/01_partition_exercise.sql
+-- Environment: PostgreSQL 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, 64-bit
+-- Run by: automated sandbox run (Claude), NOT the student's own machine
+-- ----------------------------------------------------------------
+-- Isolated educational partitioning exercise, not a migration of library.loans.
+CREATE SCHEMA IF NOT EXISTS library_experiments;
+psql:/home/claude/repo2/MIT8103_Library_Management_System-main/portfolio-5-distributed-cloud/01_partition_exercise.sql:2: NOTICE:  schema "library_experiments" already exists, skipping
+CREATE SCHEMA
+CREATE TABLE IF NOT EXISTS library_experiments.loan_events(
+ event_id bigint GENERATED ALWAYS AS IDENTITY,
+ borrower_id bigint NOT NULL,
+ event_time timestamptz NOT NULL DEFAULT now(),
+ event_type text NOT NULL
+) PARTITION BY HASH(borrower_id);
+CREATE TABLE
+CREATE TABLE IF NOT EXISTS library_experiments.loan_events_p0 PARTITION OF library_experiments.loan_events FOR VALUES WITH (MODULUS 2,REMAINDER 0);
+CREATE TABLE
+CREATE TABLE IF NOT EXISTS library_experiments.loan_events_p1 PARTITION OF library_experiments.loan_events FOR VALUES WITH (MODULUS 2,REMAINDER 1);
+CREATE TABLE
+INSERT INTO library_experiments.loan_events(borrower_id,event_type) VALUES(1,'CHECKOUT'),(2,'RETURN');
+INSERT 0 2
+SELECT tableoid::regclass AS partition_name,borrower_id,event_type FROM library_experiments.loan_events;
+           partition_name           | borrower_id | event_type 
+------------------------------------+-------------+------------
+ library_experiments.loan_events_p0 |           1 | CHECKOUT
+ library_experiments.loan_events_p0 |           2 | RETURN
+(2 rows)
+

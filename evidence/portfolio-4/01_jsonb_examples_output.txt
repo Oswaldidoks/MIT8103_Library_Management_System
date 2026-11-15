@@ -1,0 +1,50 @@
+-- EVIDENCE CAPTURE
+-- Generated: 2026-11-15 01:36:27 UTC
+-- Source script: portfolio-4-nosql-postgresql/01_jsonb_examples.sql
+-- Environment: PostgreSQL 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, 64-bit
+-- Run by: automated sandbox run (Claude), NOT the student's own machine
+-- ----------------------------------------------------------------
+SET search_path TO library,public;
+SET
+-- JSONB provides document-style modelling inside PostgreSQL.
+SELECT book_id,title,metadata->>'format' AS format,metadata->'subjects' AS subjects FROM books ORDER BY book_id;
+ book_id |             title              |  format   |         subjects          
+---------+--------------------------------+-----------+---------------------------
+       1 | Practical PostgreSQL           | paperback | ["databases", "sql"]
+       2 | Introduction to Data Modelling | hardcover | ["design", "databases"]
+       3 | The River at Dawn              | paperback | ["fiction"]
+       4 | Business in West Africa        | ebook     | ["business", "africa"]
+       5 | Cities and Memory              | hardcover | ["history", "cities"]
+       6 | Concurrency by Example         | paperback | ["transactions", "sql"]
+       7 | Markets at Midnight            | paperback | ["fiction"]
+       8 | Data for Managers              | paperback | ["analytics", "business"]
+(8 rows)
+
+SELECT book_id,title FROM books WHERE metadata @> '{"language":"en"}'::jsonb;
+ book_id |             title              
+---------+--------------------------------
+       1 | Practical PostgreSQL
+       2 | Introduction to Data Modelling
+       3 | The River at Dawn
+       4 | Business in West Africa
+       5 | Cities and Memory
+       6 | Concurrency by Example
+       7 | Markets at Midnight
+       8 | Data for Managers
+(8 rows)
+
+CREATE INDEX IF NOT EXISTS ix_books_metadata_gin ON books USING GIN(metadata);
+CREATE INDEX
+EXPLAIN (ANALYZE,BUFFERS) SELECT title FROM books WHERE metadata @> '{"subjects":["databases"]}'::jsonb;
+                                           QUERY PLAN                                            
+-------------------------------------------------------------------------------------------------
+ Seq Scan on books  (cost=0.00..1.10 rows=1 width=378) (actual time=0.007..0.010 rows=2 loops=1)
+   Filter: (metadata @> '{"subjects": ["databases"]}'::jsonb)
+   Rows Removed by Filter: 6
+   Buffers: shared hit=1
+ Planning:
+   Buffers: shared hit=23
+ Planning Time: 0.101 ms
+ Execution Time: 0.023 ms
+(8 rows)
+
