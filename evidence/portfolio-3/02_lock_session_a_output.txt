@@ -1,0 +1,32 @@
+-- EVIDENCE CAPTURE
+-- Generated: 2026-11-15 01:35:57 UTC
+-- Source script: portfolio-3-transactions-concurrency/02_session_a.sql (harness inserts SELECT pg_sleep(5) before COMMIT)
+-- Environment: PostgreSQL 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, 64-bit
+-- Run by: automated sandbox run (Claude), NOT the student's own machine
+-- ----------------------------------------------------------------
+SET search_path TO library,public;
+SET
+-- Run manually in session A; leave the transaction open while session B runs.
+BEGIN;
+BEGIN
+SELECT copy_id FROM book_copies WHERE copy_id=10 FOR UPDATE;
+ copy_id 
+---------
+      10
+(1 row)
+
+SELECT checkout_book(10,7,2,14);
+ checkout_book 
+---------------
+        100009
+(1 row)
+
+-- Wait for session B to attempt checkout, then:
+SELECT pg_sleep(5);
+ pg_sleep 
+----------
+ 
+(1 row)
+
+COMMIT;
+COMMIT

@@ -1,0 +1,32 @@
+-- EVIDENCE CAPTURE
+-- Generated: 2026-11-15 01:36:15 UTC
+-- Source script: portfolio-3-transactions-concurrency/09_repeatable_read_a.sql
+-- Environment: PostgreSQL 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, 64-bit
+-- Run by: automated sandbox run (Claude), NOT the student's own machine
+-- ----------------------------------------------------------------
+-- Reset table with 06_isolation_setup.sql first.
+-- Session A. Start this, then run 08_isolation_b.sql during the sleep.
+BEGIN ISOLATION LEVEL REPEATABLE READ;
+BEGIN
+SELECT tally AS first_read FROM library_experiments.isolation_counter WHERE id=1;
+ first_read 
+------------
+         10
+(1 row)
+
+SELECT pg_sleep(12);
+ pg_sleep 
+----------
+ 
+(1 row)
+
+SELECT tally AS second_read FROM library_experiments.isolation_counter WHERE id=1;
+ second_read 
+-------------
+          10
+(1 row)
+
+COMMIT;
+COMMIT
+-- Expected if B committed during sleep: BOTH reads return 10.
+-- A new transaction after COMMIT will see B's updated 11.

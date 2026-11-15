@@ -1,0 +1,16 @@
+-- EVIDENCE CAPTURE
+-- Generated: 2026-11-15 01:36:02 UTC
+-- Source script: portfolio-3-transactions-concurrency/06_isolation_setup.sql
+-- Environment: PostgreSQL 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, 64-bit
+-- Run by: automated sandbox run (Claude), NOT the student's own machine
+-- ----------------------------------------------------------------
+-- Isolated training table; does not alter any real loan.
+CREATE SCHEMA IF NOT EXISTS library_experiments;
+CREATE SCHEMA
+DROP TABLE IF EXISTS library_experiments.isolation_counter;
+psql:/home/claude/repo2/MIT8103_Library_Management_System-main/portfolio-3-transactions-concurrency/06_isolation_setup.sql:3: NOTICE:  table "isolation_counter" does not exist, skipping
+DROP TABLE
+CREATE TABLE library_experiments.isolation_counter(id integer PRIMARY KEY,tally integer NOT NULL);
+CREATE TABLE
+INSERT INTO library_experiments.isolation_counter(id,tally) VALUES(1,10);
+INSERT 0 1

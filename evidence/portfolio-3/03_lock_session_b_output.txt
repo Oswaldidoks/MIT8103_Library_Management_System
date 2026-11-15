@@ -1,0 +1,21 @@
+-- EVIDENCE CAPTURE
+-- Generated: 2026-11-15 01:35:57 UTC
+-- Source script: portfolio-3-transactions-concurrency/03_session_b.sql (started ~1.5s after session A)
+-- Environment: PostgreSQL 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, 64-bit
+-- Run by: automated sandbox run (Claude), NOT the student's own machine
+-- ----------------------------------------------------------------
+-- session B started at 01:35:59 UTC
+SET search_path TO library,public;
+SET
+-- Run in a second psql session while A holds the copy lock.
+BEGIN;
+BEGIN
+SET LOCAL lock_timeout='8s';
+SET
+SELECT checkout_book(10,8,2,14);
+psql:/home/claude/repo2/MIT8103_Library_Management_System-main/portfolio-3-transactions-concurrency/03_session_b.sql:5: ERROR:  Copy 10 is already on loan
+CONTEXT:  PL/pgSQL function checkout_book(bigint,bigint,bigint,integer) line 12 at RAISE
+-- Expected: lock timeout while A holds the lock, or already-on-loan error after A commits.
+ROLLBACK;
+ROLLBACK
+-- session B finished at 01:36:02 UTC
